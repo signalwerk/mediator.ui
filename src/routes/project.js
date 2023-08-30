@@ -115,7 +115,7 @@ function ProjectDetail() {
       );
 
       fetchFiles(projectId);
-      if (selectedFile && selectedFile.id === fileId) {
+      if (selectedFile && selectedFile._id === fileId) {
         onFileSelection(null);
       }
     } catch (error) {
@@ -168,26 +168,32 @@ function ProjectDetail() {
       />
       <button onClick={handleProjectTitleUpdate}>Update</button>
 
+      <hr />
+      <input
+        type="file"
+        multiple
+        ref={refFile}
+        onChange={(e) => setUploadFiles(Array.from(e.target.files))}
+      />
+      <button onClick={handleFileUpload}>Upload</button>
+      <hr />
+
       {
         <div>
           <h2>{projectId.title}</h2>
           <h3>Files</h3>
           <ul>
             {files.map((file) => (
-              <li key={file.id}>
+              <li key={file._id}>
+                <img
+                  src={`http://localhost:3000/typesetting/${file.hash}/resize@width:130;/slug.jpg`}
+                />
                 <button onClick={() => handleFileSelection(file)}>edit </button>
-                <DeleteButton onDelete={() => handleFileDeletion(file.id)} />
+                <DeleteButton onDelete={() => handleFileDeletion(file._id)} />
                 {file.filename} - {file.title}
               </li>
             ))}
           </ul>
-          <input
-            type="file"
-            multiple
-            ref={refFile}
-            onChange={(e) => setUploadFiles(Array.from(e.target.files))}
-          />
-          <button onClick={handleFileUpload}>Upload</button>
 
           {selectedFile && (
             <FileDetail
@@ -213,7 +219,7 @@ function FileDetail({ API_BASE_URL, authToken, projectId, selectedFile }) {
   const fetchFileContent = async (file) => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/projects/${projectId}/files/${file.id}`,
+        `${API_BASE_URL}/projects/${projectId}/files/${file._id}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -233,7 +239,7 @@ function FileDetail({ API_BASE_URL, authToken, projectId, selectedFile }) {
   const handleFileContentUpdate = async () => {
     try {
       await axios.put(
-        `${API_BASE_URL}/projects/${projectId}/files/${selectedFile.id}`,
+        `${API_BASE_URL}/projects/${projectId}/files/${selectedFile._id}`,
         { newTitle: file.title },
         {
           headers: {
