@@ -186,7 +186,7 @@ function ProjectDetail() {
             {files.map((file) => (
               <li key={file._id}>
                 <img
-                  src={`http://localhost:3000/typesetting/${file.hash}/resize@width:130;/slug.jpg`}
+                  src={`${API_BASE_URL}/typesetting/${file.hash}/resize@width:130;/slug.jpg`}
                 />
                 <button onClick={() => handleFileSelection(file)}>edit </button>
                 <DeleteButton onDelete={() => handleFileDeletion(file._id)} />
