@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const DeleteButton = ({ onDelete }) => {
   const [confirm, setConfirm] = useState(false);
@@ -9,7 +9,7 @@ const DeleteButton = ({ onDelete }) => {
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [timer]);
 
   const handleDelete = () => {
     if (confirm) {
@@ -34,10 +34,9 @@ const DeleteButton = ({ onDelete }) => {
 
   return (
     <button onClick={handleDelete} disabled={disabled}>
-      {confirm ? 'Are you sure?' : 'Delete'}
+      {confirm ? "Are you sure?" : "Delete"}
     </button>
   );
 };
-
 
 export default DeleteButton;

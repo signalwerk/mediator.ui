@@ -3,10 +3,53 @@ import { Link, useParams } from "react-router-dom";
 import { useAuthContext } from "../context/AuthProvider";
 import DeleteButton from "../components/DeleteButton"; // Adjust the path accordingly
 
-import { createHashRouter, RouterProvider } from "react-router-dom";
-
 import axios from "axios";
 import { API_BASE_URL } from "../config";
+
+const fetchFileContent = async ({ file, projectId, authToken }, cb) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/projects/${projectId}/files/${file._id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+    cb(response.data);
+  } catch (error) {
+    console.error("Error fetching file content:", error);
+  }
+};
+
+const fetchProject = async ({ projectId, authToken }, cb) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/projects/${projectId}`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    cb(response.data);
+  } catch (error) {
+    console.error("Error fetching files:", error);
+  }
+};
+
+const fetchFiles = async ({ projectId, authToken }, cb) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/projects/${projectId}/files`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+    cb(response.data);
+  } catch (error) {
+    console.error("Error fetching files:", error);
+  }
+};
 
 function ProjectDetail() {
   let { projectId } = useParams();
@@ -16,47 +59,17 @@ function ProjectDetail() {
 
   const [files, setFiles] = useState([]);
   const [project, setProject] = useState({});
-  const [newFileName, setNewFileName] = useState("");
   const [uploadFiles, setUploadFiles] = useState([]);
   const [newProjectTitle, setNewProjectTitle] = useState("");
   const [selectedFile, onFileSelection] = useState(null);
 
-  const fetchProject = async (projectId) => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/projects/${projectId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      setProject(response.data);
-      setNewProjectTitle(response.data.title);
-    } catch (error) {
-      console.error("Error fetching files:", error);
-    }
-  };
-  const fetchFiles = async (projectId) => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/projects/${projectId}/files`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      setFiles(response.data);
-    } catch (error) {
-      console.error("Error fetching files:", error);
-    }
-  };
-
   useEffect(() => {
     if (projectId && authToken) {
-      fetchFiles(projectId);
-      fetchProject(projectId);
+      fetchFiles({ projectId, authToken }, setFiles);
+      fetchProject({ projectId, authToken }, (data) => {
+        setProject(data);
+        setNewProjectTitle(data.title);
+      });
     }
   }, [projectId, authToken]);
 
@@ -187,6 +200,7 @@ function ProjectDetail() {
               <li key={file._id}>
                 <img
                   src={`${API_BASE_URL}/typesetting/${file.hash}/resize@width:130;/slug.jpg`}
+                  alt="preview"
                 />
                 <button onClick={() => handleFileSelection(file)}>edit </button>
                 <DeleteButton onDelete={() => handleFileDeletion(file._id)} />
@@ -197,7 +211,6 @@ function ProjectDetail() {
 
           {selectedFile && (
             <FileDetail
-              API_BASE_URL={API_BASE_URL}
               authToken={authToken}
               projectId={projectId}
               selectedFile={selectedFile}
@@ -209,28 +222,12 @@ function ProjectDetail() {
   );
 }
 
-function FileDetail({ API_BASE_URL, authToken, projectId, selectedFile }) {
+function FileDetail({ authToken, projectId, selectedFile }) {
   const [file, setFile] = useState({});
 
   useEffect(() => {
-    fetchFileContent(selectedFile);
-  }, [selectedFile]);
-
-  const fetchFileContent = async (file) => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/projects/${projectId}/files/${file._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      setFile(response.data);
-    } catch (error) {
-      console.error("Error fetching file content:", error);
-    }
-  };
+    fetchFileContent({ file: selectedFile, projectId, authToken }, setFile);
+  }, [selectedFile, projectId, authToken]);
 
   const handleFileTitleChange = (event) => {
     setFile((item) => ({ ...item, title: event.target.value }));

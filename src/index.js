@@ -7,8 +7,10 @@ import { createHashRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./context/AuthProvider";
 import reportWebVitals from "./reportWebVitals";
 
-import Root, { rootLoader } from "./routes/root";
-import Project, { projectLoader } from "./routes/project";
+// import Root, { rootLoader } from "./routes/root";
+// import Project, { projectLoader } from "./routes/project";
+import Root from "./routes/root";
+import Project from "./routes/project";
 
 const router = createHashRouter([
   {
