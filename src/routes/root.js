@@ -3,10 +3,8 @@ import { Outlet, Link } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 import { useAuthContext } from "../context/AuthProvider";
-import DeleteButton from '../components/DeleteButton'; // Adjust the path accordingly
-
-
-
+import DeleteButton from "../components/DeleteButton";
+import BackupButton from "../components/Backup";
 
 function Root() {
   const [inputAuthToken, setInputAuthToken] = useState("");
@@ -86,6 +84,7 @@ function Root() {
     <div className="App">
       <header className="App-header">
         <Outlet />
+        <BackupButton />
         <h1>Project Manager</h1>
         {authToken ? (
           <div>
