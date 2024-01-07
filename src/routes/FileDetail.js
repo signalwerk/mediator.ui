@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Button from "../components/Button";
+import Overlay from "./Overlay";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 import { fetchFileContent } from "./project";
@@ -34,22 +35,20 @@ export function FileDetail({ authToken, projectId, selectedFile, onClose }) {
   };
 
   return (
-    <div className="file-detail__overlay">
-      <div className="file-detail__content">
-        <h2>Edit File: {file.filename}</h2>
-        <h3>Title</h3>
-        <textarea
-          rows="10"
-          value={file.title || ""}
-          onChange={handleFileTitleChange}
-        />
-        <br />
-        <Button className="file-detail__close-button" onClick={onClose}>
-          Close
-        </Button>
-        <Button onClick={handleFileContentUpdate}>Update</Button>
-        {/* <pre>{JSON.stringify(file, null, 2)}</pre> */}
-      </div>
-    </div>
+    <Overlay>
+      <h2>Edit File: {file.filename}</h2>
+      <h3>Title</h3>
+      <textarea
+        rows="10"
+        value={file.title || ""}
+        onChange={handleFileTitleChange}
+      />
+      <br />
+      <Button className="file-detail__close-button" onClick={onClose}>
+        Close
+      </Button>
+      <Button onClick={handleFileContentUpdate}>Update</Button>
+      {/* <pre>{JSON.stringify(file, null, 2)}</pre> */}
+    </Overlay>
   );
 }
