@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useAuthContext } from "../context/AuthProvider";
 import DeleteButton from "../components/DeleteButton";
 import Button from "../components/Button";
+import ProgressBar from "./ProgressBar"; // Import the ProgressBar component
 
 import axios from "axios";
 import { API_BASE_URL } from "../config";
@@ -73,6 +74,7 @@ function ProjectDetail() {
   const [uploadFiles, setUploadFiles] = useState([]);
   const [newProjectTitle, setNewProjectTitle] = useState("");
   const [selectedFile, onFileSelection] = useState(null);
+  const [totalUploadProgress, setTotalUploadProgress] = useState(0);
 
   useEffect(() => {
     if (projectId && authToken) {
@@ -99,7 +101,6 @@ function ProjectDetail() {
     if (!uploadFiles || uploadFiles.length === 0) return;
 
     const formData = new FormData();
-    // Loop through the files and append them to the FormData
     for (const file of uploadFiles) {
       formData.append("files[]", file);
     }
@@ -113,14 +114,21 @@ function ProjectDetail() {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "multipart/form-data",
           },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setTotalUploadProgress(progress);
+          },
         }
       );
 
       // Fetch the latest files
-      fetchFiles(projectId);
+      fetchFiles({ projectId, authToken }, setFiles);
 
-      // Empty the selected files
+      // Reset state
       setUploadFiles([]);
+      setTotalUploadProgress(0);
       refFile.current.value = "";
     } catch (error) {
       console.error("Error uploading files:", error);
@@ -204,6 +212,8 @@ function ProjectDetail() {
         onChange={(e) => setUploadFiles(Array.from(e.target.files))}
       />
       <Button onClick={handleFileUpload}>Upload</Button>
+      {totalUploadProgress && <ProgressBar progress={totalUploadProgress} />}
+
       <hr />
 
       {
