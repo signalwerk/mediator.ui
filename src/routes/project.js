@@ -1,12 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuthContext } from "../context/AuthProvider";
-import DeleteButton from "../components/DeleteButton"; // Adjust the path accordingly
+import DeleteButton from "../components/DeleteButton";
+import Button from "../components/Button";
 
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 
-const fetchFileContent = async ({ file, projectId, authToken }, cb) => {
+import "./project.css";
+import { FileDetail } from "./FileDetail";
+
+const copyToClipboard = (path) => {
+  navigator.clipboard.writeText(path).then(
+    () => console.log("Path copied to clipboard"),
+    (err) => console.error("Error copying text: ", err)
+  );
+};
+
+export const fetchFileContent = async ({ file, projectId, authToken }, cb) => {
   try {
     const response = await axios.get(
       `${API_BASE_URL}/projects/${projectId}/files/${file._id}`,
@@ -136,6 +147,10 @@ function ProjectDetail() {
     }
   };
 
+  const closeFileDetail = () => {
+    onFileSelection(null);
+  };
+
   const handleFileSelection = (file) => {
     onFileSelection(file);
   };
@@ -179,7 +194,7 @@ function ProjectDetail() {
         value={newProjectTitle}
         onChange={handleProjectTitleChange}
       />
-      <button onClick={handleProjectTitleUpdate}>Update</button>
+      <Button onClick={handleProjectTitleUpdate}>Update</Button>
 
       <hr />
       <input
@@ -188,25 +203,68 @@ function ProjectDetail() {
         ref={refFile}
         onChange={(e) => setUploadFiles(Array.from(e.target.files))}
       />
-      <button onClick={handleFileUpload}>Upload</button>
+      <Button onClick={handleFileUpload}>Upload</Button>
       <hr />
 
       {
-        <div>
+        <div className="project-detail__files">
           <h2>{projectId.title}</h2>
           <h3>Files</h3>
-          <ul>
-            {files.map((file) => (
-              <li key={file._id}>
-                <img
-                  src={`${API_BASE_URL}/typesetting/${file.hash}/resize@width:130;/slug.jpg`}
-                  alt="preview"
-                />
-                <button onClick={() => handleFileSelection(file)}>edit </button>
-                <DeleteButton onDelete={() => handleFileDeletion(file._id)} />
-                {file.filename} - {file.title}
-              </li>
-            ))}
+          <p>Count: {files.length}</p>
+          <ul className="project-detail__file-list">
+            {files.map((file) => {
+              const imagePath = `${API_BASE_URL}/${project.title}/${file.hash}/resize@width:130;/${file.filename}.jpg`;
+              const createdAt = new Date(file.createdAt)
+                .toISOString()
+                .split("T")[0];
+              const updatedAt = new Date(file.updatedAt)
+                .toISOString()
+                .split("T")[0];
+
+              return (
+                <li key={file._id} className="project-detail__file-item">
+                  <div className="project-detail__image-container">
+                    <img
+                      src={imagePath}
+                      alt="preview"
+                      className="project-detail__image"
+                    />
+                  </div>
+                  <div className="project-detail__info">
+                    <div className="project-detail__text">
+                      Filename: {file.filename}
+                      {file.title && (
+                        <>
+                          <br />
+                          Title: {file.title}
+                        </>
+                      )}
+                      <br />
+                      Created: {createdAt}
+                      <br />
+                      Updated: {updatedAt}
+                    </div>
+                    <div className="project-detail__buttons">
+                      <Button
+                        className="button"
+                        onClick={() => handleFileSelection(file)}
+                      >
+                        Edit
+                      </Button>
+                      <DeleteButton
+                        onDelete={() => handleFileDeletion(file._id)}
+                      />
+                      <Button
+                        className="button"
+                        onClick={() => copyToClipboard(imagePath)}
+                      >
+                        Copy Path
+                      </Button>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
 
           {selectedFile && (
@@ -214,52 +272,11 @@ function ProjectDetail() {
               authToken={authToken}
               projectId={projectId}
               selectedFile={selectedFile}
+              onClose={closeFileDetail}
             />
           )}
         </div>
       }
-    </div>
-  );
-}
-
-function FileDetail({ authToken, projectId, selectedFile }) {
-  const [file, setFile] = useState({});
-
-  useEffect(() => {
-    fetchFileContent({ file: selectedFile, projectId, authToken }, setFile);
-  }, [selectedFile, projectId, authToken]);
-
-  const handleFileTitleChange = (event) => {
-    setFile((item) => ({ ...item, title: event.target.value }));
-  };
-
-  const handleFileContentUpdate = async () => {
-    try {
-      await axios.put(
-        `${API_BASE_URL}/projects/${projectId}/files/${selectedFile._id}`,
-        { newTitle: file.title },
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Error updating file content:", error);
-    }
-  };
-
-  return (
-    <div className="file-detail">
-      <h2>Edit File: {file.filename}</h2>
-      <h3>Title</h3>
-      <textarea
-        rows="10"
-        value={file.title || ""}
-        onChange={handleFileTitleChange}
-      />
-      <button onClick={handleFileContentUpdate}>Update</button>
-      {/* <pre>{JSON.stringify(file, null, 2)}</pre> */}
     </div>
   );
 }

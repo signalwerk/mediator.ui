@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 import { useAuthContext } from "../context/AuthProvider";
+import Button from "./Button";
 
 function Root() {
   const { authToken } = useAuthContext();
@@ -24,7 +25,7 @@ function Root() {
 
   return (
     <div className="App">
-      <button onClick={handleBackup}>Backup now</button>
+      <Button onClick={handleBackup}>Backup now</Button>
       <p>{status}</p>
     </div>
   );

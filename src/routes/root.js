@@ -5,6 +5,7 @@ import { API_BASE_URL } from "../config";
 import { useAuthContext } from "../context/AuthProvider";
 import DeleteButton from "../components/DeleteButton";
 import BackupButton from "../components/Backup";
+import Button from "../components/Button";
 
 function Root() {
   const [inputAuthToken, setInputAuthToken] = useState("");
@@ -88,7 +89,7 @@ function Root() {
         <h1>Project Manager</h1>
         {authToken ? (
           <div>
-            <button onClick={handleLogOut}>Log out</button>
+            <Button onClick={handleLogOut}>Log out</Button>
             <h2>Projects</h2>
             <ul>
               {projects.map((project) => (
@@ -109,7 +110,7 @@ function Root() {
               value={newProjectTitle}
               onChange={(e) => setNewProjectTitle(e.target.value)}
             />
-            <button onClick={handleCreateProject}>Create</button>
+            <Button onClick={handleCreateProject}>Create</Button>
           </div>
         ) : (
           <div>
@@ -119,7 +120,7 @@ function Root() {
               value={inputAuthToken}
               onChange={handleAuthTokenChange}
             />
-            <button onClick={handleAuthSubmit}>Log in</button>
+            <Button onClick={handleAuthSubmit}>Log in</Button>
           </div>
         )}
       </header>

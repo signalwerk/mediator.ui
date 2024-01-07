@@ -1,0 +1,49 @@
+.project-detail__files {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.project-detail__file-list {
+  list-style: none;
+  padding: 0;
+}
+
+.project-detail__file-item {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-black);
+}
+
+.project-detail__file-item + .project-detail__file-item {
+  margin-top: 1rem;
+}
+
+.project-detail__image-container {
+  max-width: 130px;
+  max-height: 130px;
+  min-width: 130px;
+  min-height: 130px;
+}
+
+.project-detail__image {
+  display: block;
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.project-detail__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+.project-detail__text {
+  /* Add styles for the text if necessary */
+}
+
+.project-detail__buttons {
+  /* Add styles for the buttons container if necessary */
+}

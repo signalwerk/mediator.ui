@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Button from "./Button";
+
 
 const DeleteButton = ({ onDelete }) => {
   const [confirm, setConfirm] = useState(false);
@@ -33,9 +35,9 @@ const DeleteButton = ({ onDelete }) => {
   };
 
   return (
-    <button onClick={handleDelete} disabled={disabled}>
+    <Button className="button" onClick={handleDelete} disabled={disabled}>
       {confirm ? "Are you sure?" : "Delete"}
-    </button>
+    </Button>
   );
 };
 

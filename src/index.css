@@ -1,11 +1,130 @@
+:root {
+  --work-sans-fea-aalt: "aalt" off;
+  --work-sans-fea-c2sc: "c2sc" off;
+  --work-sans-fea-calt: "calt" on;
+  --work-sans-fea-case: "case" off;
+  --work-sans-fea-dlig: "dlig" off;
+  --work-sans-fea-dnom: "dnom" off;
+  --work-sans-fea-frac: "frac" off;
+  --work-sans-fea-hist: "hist" off;
+  --work-sans-fea-liga: "liga" on;
+  --work-sans-fea-lnum: "lnum" off;
+  --work-sans-fea-locl: "locl" off;
+  --work-sans-fea-nalt: "nalt" off;
+  --work-sans-fea-numr: "numr" off;
+  --work-sans-fea-onum: "onum" off;
+  --work-sans-fea-ordn: "ordn" off;
+  --work-sans-fea-ornm: "ornm" off;
+  --work-sans-fea-pnum: "pnum" off;
+  --work-sans-fea-rvrn: "rvrn" off;
+  --work-sans-fea-salt: "salt" off;
+  --work-sans-fea-sinf: "sinf" off;
+  --work-sans-fea-smcp: "smcp" off;
+  --work-sans-fea-ss02: "ss02" off;
+  --work-sans-fea-ss03: "ss03" off;
+  --work-sans-fea-ss04: "ss04" off;
+  --work-sans-fea-ss05: "ss05" off;
+  --work-sans-fea-subs: "subs" off;
+  --work-sans-fea-sups: "sups" off;
+  --work-sans-fea-tnum: "tnum" off;
+  --work-sans-fea-zero: "zero" off;
+  --work-sans-fea-cpsp: "cpsp" off;
+  --work-sans-fea-kern: "kern" on;
+
+  --work-sans-weight-normal: 400;
+  --work-sans-weight-bold: 700;
+  --work-sans-weight-black: 900;
+
+  --green-color: #006984; /* c: 100 m: 0 y: 20 k: 65 */
+  --blue-color: #0054a2; /* c: 100 m: 70 y: 10 k: 52 */
+  --color-black: #121212;
+}
+
+html {
+  font-feature-settings: var(--work-sans-fea-aalt), var(--work-sans-fea-c2sc),
+    var(--work-sans-fea-calt), var(--work-sans-fea-case),
+    var(--work-sans-fea-dlig), var(--work-sans-fea-dnom),
+    var(--work-sans-fea-frac), var(--work-sans-fea-hist),
+    var(--work-sans-fea-liga), var(--work-sans-fea-lnum),
+    var(--work-sans-fea-locl), var(--work-sans-fea-nalt),
+    var(--work-sans-fea-numr), var(--work-sans-fea-onum),
+    var(--work-sans-fea-ordn), var(--work-sans-fea-ornm),
+    var(--work-sans-fea-pnum), var(--work-sans-fea-rvrn),
+    var(--work-sans-fea-salt), var(--work-sans-fea-sinf),
+    var(--work-sans-fea-smcp), var(--work-sans-fea-ss02),
+    var(--work-sans-fea-ss03), var(--work-sans-fea-ss04),
+    var(--work-sans-fea-ss05), var(--work-sans-fea-subs),
+    var(--work-sans-fea-sups), var(--work-sans-fea-tnum),
+    var(--work-sans-fea-zero), var(--work-sans-fea-cpsp),
+    var(--work-sans-fea-kern);
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  font-family: "Work Sans", sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+    sans-serif; */
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+button {
+  color: inherit;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  text-shadow: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: 1;
+  display: inline-block;
+}
+
+.button {
+  padding: 0.4em 0.7em;
+  border-radius: 0.3em;
+  transition: color 250ms, background-color 250ms, border 250ms;
+
+  color: inherit;
+
+  /* border: solid 1px var(--gray-dark-color); */
+  border: solid 1px var(--color-black);
+  /* color: var(--gray-dark-color); */
+}
+
+.button + .button {
+  margin-left: .5em;
+}
+
+.button:hover {
+  background-color: var(--blue-color);
+  color: white;
+  border-color: var(--blue-color);
+}
+
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  display: block;
+  width: 100%;
 }
