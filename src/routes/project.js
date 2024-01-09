@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuthContext } from "../context/AuthProvider";
 import DeleteButton from "../components/DeleteButton";
+import Crop from "../components/Crop/Crop";
 import Button from "../components/Button";
 import ProgressBar from "./ProgressBar"; // Import the ProgressBar component
+import Overlay from "./Overlay";
 
 import axios from "axios";
 import { API_BASE_URL } from "../config";
@@ -278,12 +280,23 @@ function ProjectDetail() {
           </ul>
 
           {selectedFile && (
-            <FileDetail
-              authToken={authToken}
-              projectId={projectId}
-              selectedFile={selectedFile}
-              onClose={closeFileDetail}
-            />
+            <>
+              <Overlay>
+                <FileDetail
+                  authToken={authToken}
+                  projectId={projectId}
+                  selectedFile={selectedFile}
+                />
+                <Crop project={project.title} selectedFile={selectedFile} />
+                <br />
+                <Button
+                  className="file-detail__close-button"
+                  onClick={closeFileDetail}
+                >
+                  Close
+                </Button>
+              </Overlay>
+            </>
           )}
         </div>
       }

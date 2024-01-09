@@ -1,0 +1,28 @@
+.cropper {
+  user-select: none; /* Prevents selection from interfering with the cropper */
+}
+
+.cropper-info {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 0.8rem;
+  background-color: #fff;
+  width: 20rem;
+}
+
+/* .cropper,
+  .cropper__max-dimension,
+  .cropper__ratio { */
+/* .cropper img {
+    pointer-events: none;
+  } */
+
+.cropper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
