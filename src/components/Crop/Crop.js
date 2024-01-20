@@ -6,7 +6,62 @@ import React, {
   useRef,
 } from "react";
 import "./Crop.css";
+import Button from "../Button";
+
 import { API_BASE_URL } from "../../config";
+
+const copyToClipboard = (text) => {
+  navigator.clipboard.writeText(text).then(
+    () => console.log("Path copied to clipboard"),
+    (err) => console.error("Error copying text: ", err)
+  );
+};
+
+function calculateGPStoDecimal(valueArray) {
+  const degrees = valueArray[0][0] / valueArray[0][1];
+  const minutes = valueArray[1][0] / valueArray[1][1];
+  const seconds = valueArray[2][0] / valueArray[2][1];
+
+  console.log({ degrees, minutes, seconds });
+  // Convert everything to decimal degrees
+  // degrees + (minutes / 60) + (seconds / 3600)
+  return degrees + minutes / 60 + seconds / 3600;
+}
+
+function generateMarkdownLinkWithDate(pictureData) {
+  const text = [];
+
+  // Extracting the date and geo-position from the picture data
+  const dateTimeOriginal = pictureData?.meta?.exif?.DateTimeOriginal?.value[0];
+
+  if (dateTimeOriginal) {
+    // Formatting the date as dd.mm.yyyy hh.mm
+    const formattedDate = dateTimeOriginal.replace(
+      /(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})/,
+      "$3. $2. $1 $4:$5"
+    );
+    text.push(formattedDate);
+  }
+
+  const latitudeData = pictureData?.meta?.exif?.GPSLatitude?.value;
+  const longitudeData = pictureData?.meta?.exif?.GPSLongitude?.value;
+
+  if (latitudeData && longitudeData) {
+    // Calculating the decimal latitude and longitude
+    const latitude = calculateGPStoDecimal(latitudeData);
+    //    latitudeData[0][0] + latitudeData[1][0] / 60 + latitudeData[2][0] / 3600;
+    const longitude = calculateGPStoDecimal(longitudeData);
+    //    longitudeData[0][0] + longitudeData[1][0] / 60 + longitudeData[2][0] / 3600;
+
+    // Constructing the Google Maps link
+    const googleMapsLink = `https://www.google.com/maps/place/${latitude},${longitude}`;
+
+    text.push(`[View on Google Maps](${googleMapsLink})`);
+  }
+  // Constructing the markdown text
+
+  return text.join(" · ");
+}
 
 const Cropper = ({ ratio, children, width, height, id }) => {
   const [widthRatio, heightRatio] = ratio.split(":").map(Number);
@@ -81,6 +136,7 @@ function generateUrl({ project, hash, crop, rotationAngle, width }) {
 
 function Crop({ project, selectedFile, onClose }) {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const [data, setData] = useState(null);
 
   const { rotationAngle, setRotationAngle } = useContext(CropContext);
 
@@ -95,6 +151,7 @@ function Crop({ project, selectedFile, onClose }) {
           })}/img.json`
         );
         const data = await response.json();
+        setData(data);
 
         if (rotationAngle) {
           // Convert rotation angle to radians for calculation
@@ -126,6 +183,8 @@ function Crop({ project, selectedFile, onClose }) {
     fetchImageSize();
   }, [selectedFile.hash, project, rotationAngle]); // Add rotationAngle as a dependency
 
+  if (!data) return null;
+
   return (
     <div className="crop">
       <input
@@ -136,6 +195,13 @@ function Crop({ project, selectedFile, onClose }) {
         value={rotationAngle}
         onChange={(e) => setRotationAngle(e.target.value)}
       />
+      <pre>{generateMarkdownLinkWithDate(data)}</pre>
+      <Button
+        className="button"
+        onClick={() => copyToClipboard(generateMarkdownLinkWithDate(data))}
+      >
+        Copy MD position and time
+      </Button>
       <Cropper
         ratio={`${imageSize.width}:${imageSize.height}`}
         width={imageSize.width}
