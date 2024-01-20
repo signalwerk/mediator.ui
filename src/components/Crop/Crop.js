@@ -169,7 +169,7 @@ function Crop({ project, selectedFile, onClose }) {
           `${generateUrl({
             project,
             hash: selectedFile.hash,
-            width: 130,
+            width: 250,
           })}/img.json`
         );
         const data = await response.json();

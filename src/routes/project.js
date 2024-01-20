@@ -225,7 +225,7 @@ function ProjectDetail() {
           <p>Count: {files.length}</p>
           <ul className="project-detail__file-list">
             {files.map((file) => {
-              const imagePath = `${API_BASE_URL}/${project.title}/${file.hash}/resize@width:130;/${file.filename}.jpg`;
+              const imagePath = `${API_BASE_URL}/${project.title}/${file.hash}/resize@width:250;/${file.filename}.jpg`;
               const createdAt = new Date(file.createdAt)
                 .toISOString()
                 .split("T")[0];
