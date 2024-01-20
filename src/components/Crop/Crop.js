@@ -22,13 +22,19 @@ function calculateGPStoDecimal(valueArray) {
   const minutes = valueArray[1][0] / valueArray[1][1];
   const seconds = valueArray[2][0] / valueArray[2][1];
 
-  console.log({ degrees, minutes, seconds });
-  // Convert everything to decimal degrees
-  // degrees + (minutes / 60) + (seconds / 3600)
   return degrees + minutes / 60 + seconds / 3600;
 }
 
-function generateMarkdownLinkWithDate(pictureData) {
+const handleButtonClick = async (data) => {
+  try {
+    const markdownText = await generateMarkdownLinkWithDate(data);
+    copyToClipboard(markdownText);
+  } catch (error) {
+    console.error("Error generating markdown:", error);
+  }
+};
+
+async function generateMarkdownLinkWithDate(pictureData) {
   const text = [];
 
   // Extracting the date and geo-position from the picture data
@@ -57,6 +63,22 @@ function generateMarkdownLinkWithDate(pictureData) {
     const googleMapsLink = `https://www.google.com/maps/place/${latitude},${longitude}`;
 
     text.push(`[View on Google Maps](${googleMapsLink})`);
+
+    const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+    try {
+      const response = await fetch(nominatimUrl);
+      const data = await response.json();
+
+      console.log({ data });
+
+      const address = data.display_name; // or any other detail you need from the response
+
+      if (address) {
+        text.push(`Address: ${address}`);
+      }
+    } catch (error) {
+      console.error("Error fetching address information:", error);
+    }
   }
   // Constructing the markdown text
 
@@ -195,11 +217,7 @@ function Crop({ project, selectedFile, onClose }) {
         value={rotationAngle}
         onChange={(e) => setRotationAngle(e.target.value)}
       />
-      <pre>{generateMarkdownLinkWithDate(data)}</pre>
-      <Button
-        className="button"
-        onClick={() => copyToClipboard(generateMarkdownLinkWithDate(data))}
-      >
+      <Button className="button" onClick={() => handleButtonClick(data)}>
         Copy MD position and time
       </Button>
       <Cropper
