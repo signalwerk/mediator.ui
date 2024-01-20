@@ -294,7 +294,6 @@ const CropperInfo = ({
         height: cropDimensions.height * height,
       },
       rotationAngle,
-      width: 800,
     });
 
     navigator.clipboard.writeText(crop);
