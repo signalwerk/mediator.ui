@@ -62,7 +62,7 @@ async function generateMarkdownLinkWithDate(pictureData) {
     // Constructing the Google Maps link
     const googleMapsLink = `https://www.google.com/maps/place/${latitude},${longitude}`;
 
-    text.push(`[View on Google Maps](${googleMapsLink})`);
+    text.push(`[Map](${googleMapsLink})`);
 
     const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
     try {
